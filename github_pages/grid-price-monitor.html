@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grid Price Monitor - Strompreis-Tracking für Home Assistant</title>
+    <meta name="description" content="Echtzeit-Strompreisüberwachung mit aWATTar API. Günstige Stunden erkennen, Kosten optimieren, Batterie-Laden tracken.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script type="module" src="/src/main.js"></script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="container">
+            <a href="index.html" class="logo">Solar Forecast ML</a>
+            <ul class="nav-links">
+                <li><a href="index.html#features">Features</a></li>
+                <li><a href="index.html#weather">Wetter-Blending</a></li>
+                <li><a href="index.html#installation">Installation</a></li>
+                <li class="nav-dropdown">
+                    <button class="nav-dropdown-toggle">
+                        Module
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+                    <div class="nav-dropdown-menu">
+                        <a href="sfml-stats.html">
+                            <span class="dropdown-icon">📊</span>
+                            <span class="dropdown-text">
+                                <span class="dropdown-title">SFML Stats</span>
+                                <span class="dropdown-desc">Energy Dashboard</span>
+                            </span>
+                        </a>
+                        <a href="grid-price-monitor.html" class="active">
+                            <span class="dropdown-icon">💰</span>
+                            <span class="dropdown-text">
+                                <span class="dropdown-title">Grid Price Monitor</span>
+                                <span class="dropdown-desc">Strompreis-Tracking</span>
+                            </span>
+                        </a>
+                    </div>
+                </li>
+                <li><a href="wissensbasis.html">Wissensbasis</a></li>
+                <li><a href="https://github.com/Zara-Toorox/ha-grid-price-monitor">GitHub</a></li>
+            </ul>
+            <div class="nav-controls">
+                <button class="theme-toggle" aria-label="Toggle theme">
+                    <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                    <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                    </svg>
+                </button>
+                <button class="hamburger" aria-label="Toggle menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1><span>Grid Price Monitor</span></h1>
+            <p>Echtzeit-Strompreisüberwachung mit automatischer Erkennung günstiger Stunden für optimales Energiemanagement</p>
+        </div>
+    </section>
+
+    <!-- Overview Section -->
+    <section id="overview">
+        <div class="container">
+            <div class="section-header">
+                <h2>Intelligentes Preis-Tracking</h2>
+                <p>Nutze den Day-Ahead Spotmarkt für günstige Strompreise</p>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">📈</div>
+                    <h3>Echtzeit-Preise</h3>
+                    <p>Live Spot-Preise von der aWATTar API. Unterstützt Deutschland (DE) und Österreich (AT) Märkte.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">💡</div>
+                    <h3>Cheap Energy Detection</h3>
+                    <p>Binary Sensor aktiviert automatisch, wenn der Preis unter den konfigurierten Schwellenwert fällt.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🧮</div>
+                    <h3>Vollkostenrechnung</h3>
+                    <p>Berechnet Gesamtpreis inkl. MwSt., Netzentgelte, Steuern und Anbieter-Aufschlag.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🔮</div>
+                    <h3>24h Forecast</h3>
+                    <p>Preisvorhersage für heute und morgen (ab 13:00 CET verfügbar). Günstigste und teuerste Stunde auf einen Blick.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🔋</div>
+                    <h3>Batterie-Tracking</h3>
+                    <p>Optional: Trackt Batterieladung vom Netz mit täglicher, wöchentlicher und monatlicher Statistik.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>2-Jahres Historie</h3>
+                    <p>Preishistorie für Trend-Analysen. Bis zu 18.000 Einträge werden gespeichert.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Price Calculation -->
+    <section id="calculation" class="architecture">
+        <div class="container">
+            <div class="section-header">
+                <h2>Preisberechnung</h2>
+                <p>Von Spot-Preis zum tatsächlichen Strompreis</p>
+            </div>
+
+            <div class="arch-diagram">
+<pre>
+<span class="highlight">Preisformel:</span>
+
+Total_price = (<span class="blue">Spot_net</span> × <span class="green">VAT_factor</span>) + Grid_fee + Taxes + Provider_markup
+
+<span class="highlight">Beispiel (Deutschland):</span>
+
+Spot-Preis (netto):     5.2 ct/kWh
+× MwSt. (19%):          × 1.19
+= Spot (brutto):        6.19 ct/kWh
++ Netzentgelt:          + 8.0 ct/kWh
++ Steuern/Abgaben:      + 4.0 ct/kWh
++ Anbieter-Aufschlag:   + 2.0 ct/kWh
+─────────────────────────────────────
+<span class="green">= Gesamtpreis:          20.19 ct/kWh</span>
+</pre>
+            </div>
+
+            <div class="article-card" style="margin-top: 40px;">
+                <div class="article-content">
+                    <h3>Automatische Kalibrierung</h3>
+                    <p>Bei der Einrichtung kann der aktuelle Preis aus der Anbieter-App eingegeben werden. Das System berechnet automatisch:</p>
+                    <ul>
+                        <li><strong>60%</strong> → Netzentgelt</li>
+                        <li><strong>30%</strong> → Steuern & Abgaben</li>
+                        <li><strong>10%</strong> → Anbieter-Aufschlag</li>
+                    </ul>
+
+                    <div class="info-box success">
+                        <div class="info-box-title">Alternativ: Manuelle Konfiguration</div>
+                        <p>Wer die genauen Werte kennt, kann Netzentgelt, Steuern und Aufschlag auch manuell eintragen.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sensors Section -->
+    <section id="sensors" class="weather-sources">
+        <div class="container">
+            <div class="section-header">
+                <h2>Sensoren & Entitäten</h2>
+                <p>Alle Daten als Home Assistant Sensoren verfügbar</p>
+            </div>
+
+            <div class="article-card">
+                <div class="article-content">
+                    <h3>Preis-Sensoren (ct/kWh)</h3>
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Sensor</th>
+                                <th>Beschreibung</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>spot_price</code></td>
+                                <td>Aktueller Spot-Preis (brutto mit MwSt.)</td>
+                            </tr>
+                            <tr>
+                                <td><code>total_price</code></td>
+                                <td>Gesamtpreis inkl. aller Abgaben</td>
+                            </tr>
+                            <tr>
+                                <td><code>spot_price_next_hour</code></td>
+                                <td>Spot-Preis der nächsten Stunde</td>
+                            </tr>
+                            <tr>
+                                <td><code>total_price_next_hour</code></td>
+                                <td>Gesamtpreis der nächsten Stunde</td>
+                            </tr>
+                            <tr>
+                                <td><code>cheapest_hour_today</code></td>
+                                <td>Günstigste Stunde heute (HH:00 Format)</td>
+                            </tr>
+                            <tr>
+                                <td><code>most_expensive_hour_today</code></td>
+                                <td>Teuerste Stunde heute</td>
+                            </tr>
+                            <tr>
+                                <td><code>average_price_today</code></td>
+                                <td>Tagesdurchschnittspreis</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h3>Binary Sensor</h3>
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Sensor</th>
+                                <th>Beschreibung</th>
+                                <th>Zustände</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>cheap_energy</code></td>
+                                <td>Preis unter Schwellenwert?</td>
+                                <td><span class="table-badge available">ON</span> = Günstig, <span class="table-badge unavailable">OFF</span> = Teuer</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h3>Batterie-Sensoren (Optional)</h3>
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Sensor</th>
+                                <th>Einheit</th>
+                                <th>Beschreibung</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>battery_power</code></td>
+                                <td>W</td>
+                                <td>Aktuelle Batterie-Ladeleistung</td>
+                            </tr>
+                            <tr>
+                                <td><code>battery_charged_today</code></td>
+                                <td>kWh</td>
+                                <td>Heute geladene Energie</td>
+                            </tr>
+                            <tr>
+                                <td><code>battery_charged_week</code></td>
+                                <td>kWh</td>
+                                <td>Diese Woche geladene Energie</td>
+                            </tr>
+                            <tr>
+                                <td><code>battery_charged_month</code></td>
+                                <td>kWh</td>
+                                <td>Diesen Monat geladene Energie</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Use Cases -->
+    <section id="usecases">
+        <div class="container">
+            <div class="section-header">
+                <h2>Anwendungsfälle</h2>
+                <p>So nutzt du den Grid Price Monitor optimal</p>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🚗</div>
+                    <h3>E-Auto Laden</h3>
+                    <p>Automation: Wenn <code>cheap_energy = ON</code>, starte das Laden des E-Autos automatisch in den günstigsten Stunden.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🧺</div>
+                    <h3>Haushaltsgeräte</h3>
+                    <p>Waschmaschine, Trockner oder Geschirrspüler starten, wenn der Strompreis unter dem Schwellenwert liegt.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🔋</div>
+                    <h3>Batteriespeicher</h3>
+                    <p>Batterie aus dem Netz laden, wenn Spot-Preise negativ oder sehr niedrig sind.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🌡️</div>
+                    <h3>Wärmepumpe</h3>
+                    <p>Wärmepumpe in günstigen Stunden laufen lassen und Wärme im Pufferspeicher vorhalten.</p>
+                </div>
+            </div>
+
+            <div class="arch-diagram" style="margin-top: 40px;">
+<pre>
+<span class="highlight">Beispiel-Automation (YAML):</span>
+
+automation:
+  - alias: "Günstig Laden"
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.grid_price_monitor_cheap_energy
+        to: "on"
+    action:
+      - service: switch.turn_on
+        entity_id: switch.ev_charger
+</pre>
+            </div>
+        </div>
+    </section>
+
+    <!-- Configuration -->
+    <section id="configuration" class="architecture">
+        <div class="container">
+            <div class="section-header">
+                <h2>Konfiguration</h2>
+                <p>Einfache Einrichtung über die Home Assistant UI</p>
+            </div>
+
+            <div class="article-card">
+                <div class="article-content">
+                    <h3>Setup-Schritte</h3>
+                    <ol class="step-list">
+                        <li><strong>Land wählen:</strong> Deutschland (DE) oder Österreich (AT)</li>
+                        <li><strong>MwSt.-Satz:</strong> 19% (DE), 20% (AT), 7% (ermäßigt) oder 0%</li>
+                        <li><strong>Preiskonfiguration:</strong> Auto-Kalibrierung oder manuelle Eingabe</li>
+                        <li><strong>Schwellenwert:</strong> Maximaler Preis für "günstig" (Standard: 30 ct/kWh)</li>
+                        <li><strong>Batterie-Sensor:</strong> Optional - Power-Sensor für Batterie-Tracking</li>
+                    </ol>
+
+                    <h3>MwSt.-Optionen</h3>
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Option</th>
+                                <th>Faktor</th>
+                                <th>Anwendung</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>19% (Standard DE)</td>
+                                <td>× 1.19</td>
+                                <td>Deutschland Standardsatz</td>
+                            </tr>
+                            <tr>
+                                <td>20% (Standard AT)</td>
+                                <td>× 1.20</td>
+                                <td>Österreich Standardsatz</td>
+                            </tr>
+                            <tr>
+                                <td>7% (Ermäßigt)</td>
+                                <td>× 1.07</td>
+                                <td>Ermäßigter Satz (selten)</td>
+                            </tr>
+                            <tr>
+                                <td>0% (Keine MwSt.)</td>
+                                <td>× 1.00</td>
+                                <td>Gewerbliche Nutzung</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Installation -->
+    <section id="installation" class="installation">
+        <div class="container">
+            <div class="section-header">
+                <h2>Installation</h2>
+                <p>Schnelle Einrichtung über HACS</p>
+            </div>
+
+            <div class="install-steps">
+                <div class="install-step">
+                    <div class="step-number">1</div>
+                    <h4>HACS Custom Repository</h4>
+                    <p>Füge das Repository als Custom Repository in HACS hinzu</p>
+                    <div class="code-block">https://github.com/Zara-Toorox/ha-grid-price-monitor</div>
+                </div>
+
+                <div class="install-step">
+                    <div class="step-number">2</div>
+                    <h4>Integration hinzufügen</h4>
+                    <p>Settings → Devices & Services → Add Integration → Grid Price Monitor</p>
+                </div>
+
+                <div class="install-step">
+                    <div class="step-number">3</div>
+                    <h4>Konfigurieren</h4>
+                    <p>Land, MwSt. und Preiskomponenten einstellen. Optional: Batterie-Sensor verbinden.</p>
+                </div>
+
+                <div class="install-step">
+                    <div class="step-number">4</div>
+                    <h4>Automationen erstellen</h4>
+                    <p>Nutze den <code>cheap_energy</code> Binary Sensor für deine Smart-Home Automationen.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Data Storage -->
+    <section id="storage">
+        <div class="container">
+            <div class="section-header">
+                <h2>Datenspeicherung</h2>
+                <p>Resiliente Architektur mit Cache und Historie</p>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">💾</div>
+                    <h3>48h Preis-Cache</h3>
+                    <p>Preisdaten werden 48 Stunden gecacht. Bei API-Ausfällen werden gecachte Daten verwendet.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">📚</div>
+                    <h3>2-Jahres Historie</h3>
+                    <p>Bis zu 18.000 Preiseinträge werden für Trend-Analysen gespeichert. Automatische Bereinigung alter Daten.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🔄</div>
+                    <h3>Retry-Logik</h3>
+                    <p>3 automatische Wiederholungsversuche bei API-Fehlern mit 5 Sekunden Verzögerung.</p>
+                </div>
+            </div>
+
+            <div class="code-block" style="margin-top: 40px;">
+Speicherort: /config/grid_price_monitor/
+├── prices_cache.json       # 48h Preis-Cache
+├── prices_history.json     # 2-Jahres Historie
+├── statistics.json         # Statistiken
+└── battery_stats/          # Batterie-Tracking Daten
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq" class="architecture">
+        <div class="container">
+            <div class="section-header">
+                <h2>Häufige Fragen</h2>
+            </div>
+
+            <div class="article-card">
+                <div class="article-content">
+                    <h3>Welche Stromanbieter werden unterstützt?</h3>
+                    <p>Grid Price Monitor nutzt die <strong>aWATTar API</strong> für Day-Ahead Spot-Preise. Diese Preise gelten für alle dynamischen Tarife in Deutschland und Österreich (z.B. aWATTar, Tibber, Octopus Energy).</p>
+
+                    <h3>Wann sind die Preise für morgen verfügbar?</h3>
+                    <p>Die Day-Ahead Preise werden täglich gegen <strong>13:00 CET</strong> veröffentlicht. Ab dann sind die Preise für den nächsten Tag im Sensor <code>prices_tomorrow</code> verfügbar.</p>
+
+                    <h3>Was passiert bei API-Ausfällen?</h3>
+                    <p>Das System nutzt einen <strong>48-Stunden Cache</strong>. Bei API-Problemen werden die gecachten Preise verwendet. Der <code>data_source</code> Attribut zeigt an, ob Daten aus dem Cache oder von der API stammen.</p>
+
+                    <h3>Kann ich die Integration auch ohne Batterie nutzen?</h3>
+                    <p>Ja! Das Batterie-Tracking ist <strong>komplett optional</strong>. Die Preis-Sensoren und der Cheap-Energy-Sensor funktionieren auch ohne Batterie-Konfiguration.</p>
+
+                    <h3>Wie genau ist das Batterie-Tracking?</h3>
+                    <p>Die Energieberechnung nutzt <strong>Left Riemann Sum</strong> Integration für präzise kWh-Werte. Die Statistiken werden täglich, wöchentlich und monatlich automatisch zurückgesetzt.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta">
+        <div class="container">
+            <div class="cta-box">
+                <h2>Bereit für intelligentes Preis-Tracking?</h2>
+                <p>Nutze günstige Strompreise automatisch mit dem Grid Price Monitor.</p>
+                <div class="btn-group" style="justify-content: center;">
+                    <a href="https://github.com/Zara-Toorox/ha-grid-price-monitor" class="btn btn-primary">
+                        GitHub Repository
+                    </a>
+                    <a href="https://github.com/Zara-Toorox/ha-grid-price-monitor/issues" class="btn btn-secondary">
+                        Support & Issues
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-links">
+                <a href="https://github.com/Zara-Toorox/ha-grid-price-monitor">GitHub</a>
+                <a href="index.html">Solar Forecast ML</a>
+                <a href="sfml-stats.html">SFML Stats</a>
+                <a href="wissensbasis.html">Wissensbasis</a>
+            </div>
+            <p class="footer-copy">
+                © 2025 <a href="https://github.com/Zara-Toorox">Zara-Toorox</a> ·
+                Grid Price Monitor v1.0.0 ·
+                Lizenz: AGPL-3.0
+            </p>
+        </div>
+    </footer>
+</body>
+</html>

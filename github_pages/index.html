@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solar Forecast ML - Intelligente Solarprognose für Home Assistant</title>
+    <meta name="description" content="KI-gestützte Solarprognose mit TinyLSTM für Home Assistant. Multi-Output LSTM, 5-Quellen Wetter-Blending, präzise 24h Vorhersagen.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script type="module" src="/src/main.js"></script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="container">
+            <a href="index.html" class="logo">Solar Forecast ML</a>
+            <ul class="nav-links">
+                <li><a href="#features">Features</a></li>
+                <li><a href="#weather">Wetter-Blending</a></li>
+                <li><a href="#installation">Installation</a></li>
+                <li class="nav-dropdown">
+                    <button class="nav-dropdown-toggle">
+                        Module
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+                    <div class="nav-dropdown-menu">
+                        <a href="sfml-stats.html">
+                            <span class="dropdown-icon">📊</span>
+                            <span class="dropdown-text">
+                                <span class="dropdown-title">SFML Stats</span>
+                                <span class="dropdown-desc">Energy Dashboard</span>
+                            </span>
+                        </a>
+                        <a href="grid-price-monitor.html">
+                            <span class="dropdown-icon">💰</span>
+                            <span class="dropdown-text">
+                                <span class="dropdown-title">Grid Price Monitor</span>
+                                <span class="dropdown-desc">Strompreis-Tracking</span>
+                            </span>
+                        </a>
+                    </div>
+                </li>
+                <li><a href="wissensbasis.html">Wissensbasis</a></li>
+                <li><a href="https://github.com/Zara-Toorox/ha-solar-forecast-ml">GitHub</a></li>
+            </ul>
+            <div class="nav-controls">
+                <button class="theme-toggle" aria-label="Toggle theme">
+                    <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                    <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                    </svg>
+                </button>
+                <button class="hamburger" aria-label="Toggle menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-icon">☀️</div>
+                <span class="hero-badge">
+                    Version 12.4.0 "Sarpeidon"
+                </span>
+                <h1>
+                    <span>Solar Forecast ML</span><br>
+                    für Home Assistant
+                </h1>
+                <p>
+                    KI-gestützte Solarprognose mit TinyLSTM Multi-Output Neuronalen Netzwerk und 5-Quellen Wetter-Blending.
+                    Präzise 24-Stunden Vorhersagen für maximale Effizienz deiner PV-Anlage.
+                </p>
+                <div class="btn-group">
+                    <a href="https://github.com/Zara-Toorox/ha-solar-forecast-ml" class="btn btn-primary">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+                        </svg>
+                        GitHub Repository
+                    </a>
+                    <a href="#installation" class="btn btn-secondary">
+                        Installation
+                    </a>
+                </div>
+
+                <div class="stats">
+                    <div class="stat">
+                        <div class="stat-value">60k+</div>
+                        <div class="stat-label">Zeilen Code</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">5</div>
+                        <div class="stat-label">Wetter-Quellen</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">24h</div>
+                        <div class="stat-label">Vorhersagen</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">LSTM</div>
+                        <div class="stat-label">KI-Modell</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features">
+        <div class="container">
+            <div class="section-header">
+                <h2>Leistungsstarke Features</h2>
+                <p>Alles was du für präzise Solarprognosen brauchst - von KI bis Physics-Engine</p>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🧠</div>
+                    <h3>TinyLSTM Multi-Output</h3>
+                    <p>Speziell entwickeltes LSTM-Netzwerk mit 17 Base-Features + 3 Features pro Panelgruppe. Automatisches tägliches Training um 06:00 Uhr.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🔍</div>
+                    <h3>Grid-Search Optimierung</h3>
+                    <p>Automatische Hyperparameter-Optimierung findet die besten Hidden-Size, Learning-Rate und Sequence-Length für deine Anlage.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🌤️</div>
+                    <h3>5-Quellen Wetter-Blending</h3>
+                    <p>WeatherExpertBlender kombiniert Open-Meteo, wttr.in, DWD Bright Sky, ECMWF Layers und Pirate Weather mit Cloud-Type-spezifischen Gewichten.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Physics Engine Fallback</h3>
+                    <p>PanelGroupCalculator mit POA-Berechnung, Temperaturkorrektur und DNI-Tracking als robuster Fallback wenn KI nicht bereit ist.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>SFML Stats Dashboard</h3>
+                    <p>Echtzeit-Energiefluss Visualisierung mit Kosten-Tracking, automatischen Wochenberichten und Batterie-Überwachung.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3>Multi-Gruppen Support</h3>
+                    <p>Bis zu 4 Panelgruppen mit unterschiedlicher Ausrichtung. Separate Prognosen und Sensoren pro String.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Weather Blending Section -->
+    <section id="weather" class="weather-sources">
+        <div class="container">
+            <div class="section-header">
+                <h2>5-Quellen Wetter-Blending</h2>
+                <p>WeatherExpertBlender mit Cloud-Type-spezifischen Gewichten für maximale Genauigkeit</p>
+            </div>
+
+            <div class="sources-grid">
+                <div class="source-card">
+                    <div class="icon">🌍</div>
+                    <h4>Open-Meteo</h4>
+                    <p>Primäre Quelle mit GHI und Strahlungsdaten</p>
+                    <span class="source-badge">Kostenlos</span>
+                </div>
+
+                <div class="source-card">
+                    <div class="icon">🌐</div>
+                    <h4>wttr.in</h4>
+                    <p>World Weather Online, 3h-Intervalle</p>
+                    <span class="source-badge">Kostenlos</span>
+                </div>
+
+                <div class="source-card">
+                    <div class="icon">🇩🇪</div>
+                    <h4>DWD Bright Sky</h4>
+                    <p>Deutscher Wetterdienst ICON</p>
+                    <span class="source-badge">Kostenlos</span>
+                </div>
+
+                <div class="source-card">
+                    <div class="icon">🌊</div>
+                    <h4>ECMWF Layers</h4>
+                    <p>Cloud-Layer Analyse (low/mid/high)</p>
+                    <span class="source-badge">Kostenlos</span>
+                </div>
+
+                <div class="source-card">
+                    <div class="icon">🏴‍☠️</div>
+                    <h4>Pirate Weather</h4>
+                    <p>NOAA GFS/HRRR Daten</p>
+                    <span class="source-badge">Optional</span>
+                </div>
+            </div>
+
+            <div class="arch-diagram" style="margin-top: 40px;">
+<pre>
+<span class="highlight">Cloud-Type-Specific Blending:</span>
+
+CLEAR (0-10%):        Open-Meteo 30% | DWD 25% | ECMWF 20% | Pirate 15% | wttr 10%
+PARTLY_CLOUDY (10-40%): DWD <span class="blue">30%</span> | Open-Meteo 25% | ECMWF 20% | Pirate 15% | wttr 10%
+MOSTLY_CLOUDY (40-70%): DWD <span class="blue">35%</span> | ECMWF 25% | Open-Meteo 20% | Pirate 15% | wttr 5%
+OVERCAST (70-90%):    DWD <span class="blue">40%</span> | ECMWF 25% | Open-Meteo 15% | Pirate 15% | wttr 5%
+
+→ Output: <span class="green">weather_forecast_corrected.json</span> (SINGLE SOURCE OF TRUTH)
+</pre>
+            </div>
+        </div>
+    </section>
+
+    <!-- Installation Section -->
+    <section id="installation" class="installation">
+        <div class="container">
+            <div class="section-header">
+                <h2>Installation</h2>
+                <p>In wenigen Schritten zur intelligenten Solarprognose</p>
+            </div>
+
+            <div class="install-steps">
+                <div class="install-step">
+                    <div class="step-number">1</div>
+                    <h4>HACS Custom Repository</h4>
+                    <p>Füge das Repository als Custom Repository in HACS hinzu</p>
+                    <div class="code-block">https://github.com/Zara-Toorox/ha-solar-forecast-ml</div>
+                </div>
+
+                <div class="install-step">
+                    <div class="step-number">2</div>
+                    <h4>Integration hinzufügen</h4>
+                    <p>Settings → Devices & Services → Add Integration → Solar Forecast ML</p>
+                </div>
+
+                <div class="install-step">
+                    <div class="step-number">3</div>
+                    <h4>Sensoren konfigurieren</h4>
+                    <p>Power-Sensor (W) und Daily Yield (kWh) verbinden. Optional: Panelgruppen definieren</p>
+                    <div class="code-block">Format: Leistung/Azimut/Neigung/[Sensor]<br>Beispiel: 1425/180/9/sensor.pv1_kwh</div>
+                </div>
+
+                <div class="install-step">
+                    <div class="step-number">4</div>
+                    <h4>Training starten</h4>
+                    <p>Nach 50 Datenpunkten startet das automatische Training. Das Modell verbessert sich täglich.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tech Stack -->
+    <section>
+        <div class="container">
+            <div class="section-header">
+                <h2>Technologie</h2>
+                <p>Gebaut mit modernen Tools und bewährten Technologien</p>
+            </div>
+
+            <div class="tech-badges">
+                <div class="tech-badge">🐍 Python 3.11+</div>
+                <div class="tech-badge">🏠 Home Assistant 2024.1+</div>
+                <div class="tech-badge">🧠 TinyLSTM</div>
+                <div class="tech-badge">📐 NumPy</div>
+                <div class="tech-badge">🌤️ Open-Meteo API</div>
+                <div class="tech-badge">📁 Async I/O</div>
+                <div class="tech-badge">🔄 aiofiles</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta">
+        <div class="container">
+            <div class="cta-box">
+                <h2>Bereit für intelligente Solarprognosen?</h2>
+                <p>Starte jetzt mit Solar Forecast ML und optimiere deine PV-Anlage mit KI.</p>
+                <div class="btn-group" style="justify-content: center;">
+                    <a href="https://github.com/Zara-Toorox/ha-solar-forecast-ml" class="btn btn-primary">
+                        Jetzt starten
+                    </a>
+                    <a href="https://github.com/Zara-Toorox/ha-solar-forecast-ml/issues" class="btn btn-secondary">
+                        Support & Issues
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-links">
+                <a href="https://github.com/Zara-Toorox/ha-solar-forecast-ml">GitHub</a>
+                <a href="https://github.com/Zara-Toorox/ha-solar-forecast-ml#installation">Dokumentation</a>
+                <a href="https://github.com/Zara-Toorox/ha-solar-forecast-ml/issues">Issues</a>
+                <a href="https://github.com/Zara-Toorox/ha-solar-forecast-ml/releases">Releases</a>
+            </div>
+            <p class="footer-copy">
+                © 2025 <a href="https://github.com/Zara-Toorox">Zara-Toorox</a> ·
+                Solar Forecast ML ·
+                Lizenz: AGPL-3.0 ·
+                "Live long and prosper!"
+            </p>
+        </div>
+    </footer>
+</body>
+</html>

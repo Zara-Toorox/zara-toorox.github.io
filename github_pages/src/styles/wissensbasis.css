@@ -1,0 +1,9 @@
+/* ==========================================================================
+   Wissensbasis Page Specific Styles
+   ========================================================================== */
+
+.content-section {
+    padding: 60px 0;
+}
+
+/* Nothing else needed - all article styles are in components.css */

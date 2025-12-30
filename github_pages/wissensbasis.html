@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wissensbasis - Solar Forecast ML</title>
+    <meta name="description" content="Allgemeine Informationen, Tipps und Hintergrundinformationen zu Solar Forecast ML und Home Assistant.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script type="module" src="/src/main.js"></script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="container">
+            <a href="index.html" class="logo">Solar Forecast ML</a>
+            <ul class="nav-links">
+                <li><a href="index.html#features">Features</a></li>
+                <li><a href="index.html#weather">Wetter-Blending</a></li>
+                <li><a href="index.html#installation">Installation</a></li>
+                <li class="nav-dropdown">
+                    <button class="nav-dropdown-toggle">
+                        Module
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+                    <div class="nav-dropdown-menu">
+                        <a href="sfml-stats.html">
+                            <span class="dropdown-icon">📊</span>
+                            <span class="dropdown-text">
+                                <span class="dropdown-title">SFML Stats</span>
+                                <span class="dropdown-desc">Energy Dashboard</span>
+                            </span>
+                        </a>
+                        <a href="grid-price-monitor.html">
+                            <span class="dropdown-icon">💰</span>
+                            <span class="dropdown-text">
+                                <span class="dropdown-title">Grid Price Monitor</span>
+                                <span class="dropdown-desc">Strompreis-Tracking</span>
+                            </span>
+                        </a>
+                    </div>
+                </li>
+                <li><a href="wissensbasis.html" class="active">Wissensbasis</a></li>
+                <li><a href="https://github.com/Zara-Toorox/ha-solar-forecast-ml">GitHub</a></li>
+            </ul>
+            <div class="nav-controls">
+                <button class="theme-toggle" aria-label="Toggle theme">
+                    <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                    <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                    </svg>
+                </button>
+                <button class="hamburger" aria-label="Toggle menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1><span>Wissensbasis</span></h1>
+            <p>Allgemeine Informationen, Tipps und Hintergrundinformationen rund um Home Assistant und Solar Forecast ML</p>
+        </div>
+    </section>
+
+    <!-- Content -->
+    <section class="content-section">
+        <div class="container">
+
+            <!-- Article 1: Home Assistant Cache -->
+            <article class="article-card" id="ha-cache">
+                <div class="article-header">
+                    <div class="article-icon">🔄</div>
+                    <div class="article-title">
+                        <h2>Wie Home Assistant mit Integrationen umgeht<a href="#ha-cache" class="anchor-link">#</a></h2>
+                        <div class="author">Von Zara</div>
+                    </div>
+                </div>
+
+                <div class="article-content">
+                    <p>Ich merke in letzter Zeit immer wieder, dass viele User Probleme haben, wenn sie eine Integration löschen und neu installieren wollen bzw. einen echten Reset wünschen. Das liegt meist daran, dass nicht ganz klar ist, wie Home Assistant intern funktioniert.</p>
+
+                    <h3>Der häufige (falsche) Weg</h3>
+                    <p>Viele machen es so:</p>
+                    <ol>
+                        <li>Integration löschen</li>
+                        <li>Einmal "Reload" (oder schlimmer: gar kein Reload)</li>
+                        <li>Integration neu installieren</li>
+                    </ol>
+                    <p>Das funktioniert nicht richtig und löst oft keine Probleme, sondern schafft bei den allermeisten Integrationen nur neue.</p>
+
+                    <h3>Wie Home Assistant wirklich arbeitet</h3>
+                    <ul>
+                        <li>Beim Start von Home Assistant werden alle Integrationen (und ihre Daten) in einen <strong>internen Cache</strong> geladen.</li>
+                        <li>Wenn du eine Integration löschst, läuft sie intern zunächst weiter (der Cache bleibt erhalten).</li>
+                        <li>Ein Reload (z. B. YAML-Reload oder Integration-Reload) löscht diesen Cache <strong>nicht</strong> – die gelöschte Integration behält ihre alten Daten/States/Prozesse im Cache / RAM.</li>
+                        <li>Bei der Neuinstallation greift die Integration <strong>sofort</strong> auf den alten Cache / RAM zu und macht genau da weiter, wo sie aufgehört hat.</li>
+                        <li>Neue Features, Migrationen oder Änderungen im Code werden oft ignoriert → Probleme bleiben oder werden schlimmer.</li>
+                    </ul>
+
+                    <div class="info-box warning">
+                        <div class="info-box-title">Beispiel</div>
+                        <p>Löschen → Reload → Neu installieren → Alte Daten aus dem Cache werden sofort wieder geladen.</p>
+                        <p>Wenn du zwischendurch den Ordner löschst → Reload → Ordner wird neu erstellt, aber sofort mit alten Cache-Daten gefüllt → Keine Migrationen, und neue Felder werden meistens nicht angewendet → Datenmüll und Fehlfunktionen.</p>
+                    </div>
+
+                    <h3>Der richtige Weg für einen sauberen Neustart</h3>
+                    <p><strong>Gilt für JEDE Integration!</strong></p>
+                    <ol class="step-list">
+                        <li>Integration deinstallieren/löschen (über Einstellungen → Geräte & Dienste → Integrationen).</li>
+                        <li><strong>Home Assistant komplett neu starten</strong> (nicht nur Reload!). Das löscht den Cache und lädt alles frisch.</li>
+                        <li>Integration neu installieren.</li>
+                    </ol>
+
+                    <div class="info-box success">
+                        <div class="info-box-title">Nur so wird der neue/frische Code wirklich angewendet!</div>
+                    </div>
+
+                    <h3>Für Integrationen mit eigenen Dateien/Ordnern</h3>
+                    <p>Für Integrationen, die eigene Dateien/Ordner anlegen (wie viele Custom-Integrationen, inklusive meiner):</p>
+                    <ol class="step-list">
+                        <li>Vor dem Neustart zusätzlich alle zugehörigen Ordner manuell löschen (z. B. im <code>/config</code>-Verzeichnis oder <code>.storage</code>, falls bekannt).</li>
+                        <li>Dann neu starten → Neu installieren → Optional nochmal Reload (zur Sicherheit).</li>
+                    </ol>
+                    <p>So startet alles wirklich von vorne, Migrationen laufen durch, und neue Datenstrukturen werden korrekt verwendet.</p>
+
+                    <div class="info-box">
+                        <div class="info-box-title">Hinweis</div>
+                        <p>Meine Integration hält sich 100% an die HA-Richtlinien und macht keine "illegalen" automatischen Löschaktionen – deswegen ist dieser manuelle Clean-Up nötig, um wirklich sauber zu sein. Das werde ich auch nicht ändern. Mir ist bewusst, dass es möglich ist, mittels Skript alle py-caches und den Cache von Home Assistant zu löschen. Das ist aber offiziell von Home Assistant entwickelten Apps / Integrationen vorbehalten - das werde ich NICHT umgehen!</p>
+                    </div>
+
+                    <div class="article-tags">
+                        <span class="tag">Home Assistant</span>
+                        <span class="tag">Cache</span>
+                        <span class="tag">Troubleshooting</span>
+                        <span class="tag">Best Practice</span>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Article 2: Grid-Search -->
+            <article class="article-card" id="grid-search">
+                <div class="article-header">
+                    <div class="article-icon blue">🔍</div>
+                    <div class="article-title">
+                        <h2>Grid-Search Optimierung<a href="#grid-search" class="anchor-link">#</a></h2>
+                        <div class="author">Feature-Dokumentation</div>
+                    </div>
+                </div>
+
+                <div class="article-content">
+                    <h3>Was ist Grid-Search?</h3>
+                    <p>Grid-Search testet automatisch verschiedene Einstellungen für das AI-Modell, um die beste Kombination zu finden. Stellt es euch so vor, als würdet ihr versuchen, ein Zahlenschloss durch Probieren aller möglichen Kombinationen zu öffnen.</p>
+                    <p><strong>Anders erklärt:</strong> Statt zu raten, welche Einstellungen am besten funktionieren, probiert das System systematisch alle Möglichkeiten durch und merkt sich die beste.</p>
+
+                    <h3>Beispiel</h3>
+                    <div class="code-block">
+Einstellung A: Genauigkeit: 72%
+Einstellung B: Genauigkeit: 76%
+Einstellung C: Genauigkeit: 81% ← Gewinner
+                    </div>
+                    <p>Das System wählt automatisch Einstellung C für zukünftige Prognosen, die mit einer geringen Varianz dem Gelernten entsprechen. Das für jede Stunde und Wetter-Kombination.</p>
+
+                    <h3>Auswirkung auf die Prognose</h3>
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Metrik</th>
+                                <th>Ohne Optimierung</th>
+                                <th>Mit Optimierung</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Tagesprognose</td>
+                                <td>8.5 kWh</td>
+                                <td>7.5 kWh</td>
+                            </tr>
+                            <tr>
+                                <td>Tatsächlich</td>
+                                <td>7.2 kWh</td>
+                                <td>7.2 kWh</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Fehler</strong></td>
+                                <td style="color: #ef4444;">18%</td>
+                                <td style="color: var(--success);">4%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h3>Hardware-Einschränkung</h3>
+                    <div class="info-box warning">
+                        <div class="info-box-title">Wichtig</div>
+                        <p>Grid-Search ist nur auf leistungsstarker Hardware mit ORIGINAL Home Assistant (x64) verfügbar! Auf nicht geeigneter Hardware wird es blockiert!</p>
+                    </div>
+
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Hardware</th>
+                                <th>Grid-Search</th>
+                                <th>Grund</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>NUC / Mini-PC</td>
+                                <td><span class="table-badge available">Verfügbar</span></td>
+                                <td>Genug Rechenleistung</td>
+                            </tr>
+                            <tr>
+                                <td>Desktop / Server</td>
+                                <td><span class="table-badge available">Verfügbar</span></td>
+                                <td>Genug Rechenleistung</td>
+                            </tr>
+                            <tr>
+                                <td>Raspberry Pi 3/4/5</td>
+                                <td><span class="table-badge unavailable">Nicht verfügbar</span></td>
+                                <td>Zu langsam (mehrere Stunden)</td>
+                            </tr>
+                            <tr>
+                                <td>Virtuelle Maschine / Proxmox</td>
+                                <td><span class="table-badge unavailable">Nicht verfügbar</span></td>
+                                <td>Geteilte Ressourcen, unzuverlässig</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h3>Warum diese Einschränkung?</h3>
+                    <p>Grid-Search trainiert das AI-Modell mehrfach hintereinander (1x pro Monat), um die beste Kombination zu finden (4-6 Durchläufe).</p>
+                    <ul>
+                        <li>Auf einem <strong>Raspberry Pi</strong> würde das 3-8 Stunden dauern und das System stark belasten.</li>
+                        <li>Auf einem <strong>NUC</strong> dauert es nur 20-40 Minuten.</li>
+                        <li>Auf einem <strong>Laptop</strong> (i5 8GB RAM) ca. 15-30 Minuten.</li>
+                        <li>Auf <strong>Proxmox</strong> würde es fehlschlagen durch die Leistungsminderung / Leistungsverteilung zwischen HOST und VM. Tests haben gezeigt (Proxmox mit 32GB RAM i7 zugewiesen), dass es abbricht und hängt.</li>
+                    </ul>
+                    <p>Die Erkennung erfolgt automatisch beim Start - ihr müsst nichts konfigurieren.</p>
+
+                    <div class="info-box success">
+                        <div class="info-box-title">Wichtig zu wissen</div>
+                        <p>Die KI wird auf <strong>allen</strong> Systemen laufen, ohne Einschränkung. Nur das erweiterte Training "Grid Search" ist limitiert auf bestimmte Hardware. Im Ergebnis bedeutet es "nur", dass nicht unterstützte Systeme länger benötigen! Es ist also ein "Bonus-Feature" für alle "Home Assistant Originalen x64 Systeme auf von Home Assistant empfohlener Hardware".</p>
+                    </div>
+
+                    <div class="article-tags">
+                        <span class="tag">KI</span>
+                        <span class="tag">Optimierung</span>
+                        <span class="tag">Hardware</span>
+                        <span class="tag">Feature</span>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Article 3: Yield-Berechnung -->
+            <article class="article-card" id="yield-berechnung">
+                <div class="article-header">
+                    <div class="article-icon green">📊</div>
+                    <div class="article-title">
+                        <h2>Design-Entscheidung: Yield-Berechnung<a href="#yield-berechnung" class="anchor-link">#</a></h2>
+                        <div class="author">Architektur-Dokumentation</div>
+                    </div>
+                </div>
+
+                <div class="article-content">
+                    <p>Bei der Entwicklung meiner Integration stand ich vor einer grundlegenden Frage: Soll ich den Tagesertrag (Yield) selbst berechnen – also nur den aktuellen Leistungs-Sensor (Power) abfragen und den Ertrag intern über die Zeit integrieren – oder soll ich auf einen separaten Yield-Sensor setzen, der in Home Assistant konfiguriert wird?</p>
+
+                    <p><strong>Ich habe mich ganz bewusst für die zweite Variante entschieden:</strong> Die Integration erwartet einen fertigen <code>daily_yield</code>-Sensor vom Nutzer und berechnet nichts selbst.</p>
+
+                    <h3>1. Home Assistant hat bereits ausgereifte native Lösungen</h3>
+                    <p>Mit dem <strong>Riemann Sum Integration Sensor</strong> und dem <strong>Utility Meter</strong> gibt es zwei Komponenten, die exakt für die Integration von Leistung zu Energie entwickelt wurden. Diese werden seit Jahren von Tausenden Nutzern eingesetzt, intensiv getestet und kontinuierlich verbessert. Alle denkbaren Edge-Cases – HA-Neustarts, Sensorausfälle, Zeitumstellungen (Sommer-/Winterzeit), fehlende Datenpunkte – sind dort bereits sauber abgefangen. Es ist einer der grundlegenden und standardisierten Prozesse in HA selbst.</p>
+
+                    <h3>2. Deutlich höhere Genauigkeit</h3>
+                    <p>Der Riemann-Sum-Sensor von HA reagiert auf jeden State-Change des Power-Sensors und integriert praktisch in Echtzeit. Eine eigene Berechnung in der Integration wäre zwangsläufig an das Update-Intervall der API-Abfrage gebunden (meist 30–60 Sekunden oder länger). Das bedeutet weniger Datenpunkte und damit zwangsläufig Ungenauigkeiten, besonders bei schnellen Leistungsänderungen (z. B. Wolken).</p>
+
+                    <h3>3. Persistenz und Zuverlässigkeit</h3>
+                    <p>Bei einem Neustart von Home Assistant oder einem Reload der Integration müsste ich den aktuellen Tagesstand selbst speichern und wiederherstellen – inklusive aller Fallstricke. HA macht das mit seinen nativen Sensoren automatisch und extrem robust. Das Erstellen von Sensoren gehört zum 1x1 einer jeden HA-Installation.</p>
+
+                    <h3>4. Weniger Code = weniger Wartungsaufwand und weniger Bugs</h3>
+                    <p>Jede Zeile Code, die ich nicht schreiben muss, ist eine potenzielle Fehlerquelle weniger. Die Ertragsberechnung ist kein Kernfeature dieser Integration – das Lernen für die Leistungs- und Ertragsprognose ist der eigentliche Mehrwert. Alles drumherum sollte so schlank und stabil wie möglich bleiben.</p>
+
+                    <h3>5. Maximale Flexibilität für den Nutzer</h3>
+                    <p>Manche Wechselrichter (z. B. bestimmte Fronius- oder SolarEdge-Modelle) liefern bereits einen präzisen <code>daily_yield</code> direkt aus der API. Andere Nutzer haben vielleicht schon einen Utility Meter oder einen anderen Riemann-Sensor im Einsatz, z.B. im Energie-Dashboard.</p>
+                    <p>Durch die aktuelle Lösung kann jeder einfach den Sensor eintragen, der in seinem Setup am genauesten ist – ohne dass die Integration etwas vorschreibt.</p>
+
+                    <div class="info-box success">
+                        <div class="info-box-title">Fazit</div>
+                        <p>Ich erfinde das Rad nicht neu, wenn Home Assistant es bereits rund, stabil und präzise gebaut hat – und auch viel besser als ich es bauen könnte!</p>
+                    </div>
+
+                    <div class="article-tags">
+                        <span class="tag">Architektur</span>
+                        <span class="tag">Design</span>
+                        <span class="tag">Yield</span>
+                        <span class="tag">Best Practice</span>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Article 4: Sensor-Konfiguration -->
+            <article class="article-card" id="sensor-konfiguration">
+                <div class="article-header">
+                    <div class="article-icon">📡</div>
+                    <div class="article-title">
+                        <h2>Sensor-Konfiguration: Pflicht vs. Optional<a href="#sensor-konfiguration" class="anchor-link">#</a></h2>
+                        <div class="author">Einrichtungs-Hilfe</div>
+                    </div>
+                </div>
+
+                <div class="article-content">
+                    <p>Die Integration benötigt bestimmte Sensoren, um zu funktionieren. Hier eine Übersicht, welche Sensoren zwingend erforderlich sind und welche optional das Lernen beschleunigen.</p>
+
+                    <h3>Pflicht-Sensoren (Minimum)</h3>
+                    <p>Diese beiden Sensoren sind <strong>zwingend erforderlich</strong>:</p>
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Sensor</th>
+                                <th>Einheit</th>
+                                <th>Beschreibung</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Tagesertrag (Daily Yield)</strong></td>
+                                <td>kWh</td>
+                                <td>Muss um Mitternacht auf 0 zurückgesetzt werden</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Aktuelle Leistung (Power)</strong></td>
+                                <td>Watt</td>
+                                <td>Aktuelle Erzeugungsleistung der PV-Anlage</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h3>Optionale Sensoren</h3>
+                    <p>Diese Sensoren sind nicht zwingend erforderlich, <strong>beschleunigen aber das Lernen erheblich</strong>:</p>
+                    <ul>
+                        <li><strong>Temperatur</strong> - Außentemperatur in °C</li>
+                        <li><strong>Windgeschwindigkeit</strong> - Wind in m/s oder km/h</li>
+                        <li><strong>Sonneneinstrahlung (Irradiance)</strong> - W/m²</li>
+                        <li><strong>Lux</strong> - Lichtstärke</li>
+                        <li><strong>Niederschlag</strong> - Regen in mm</li>
+                        <li><strong>Luftdruck</strong> - in hPa</li>
+                        <li><strong>Luftfeuchtigkeit</strong> - in %</li>
+                        <li><strong>Batterie-SoC</strong> - Ladezustand in %</li>
+                        <li><strong>Tagesverbrauch</strong> - in kWh</li>
+                    </ul>
+
+                    <div class="info-box danger">
+                        <div class="info-box-title">Wichtige Warnung</div>
+                        <p><strong>Verwendet KEINE Wetter-Integrationsdaten als Ersatz für lokale Sensoren!</strong></p>
+                        <p>Wetterdaten von Integrationen sind oft ungenau für euren spezifischen Standort. Lokale Sensoren liefern präzisere Daten, die für das Machine Learning essentiell sind. In der Vergangenheit gab es viele Probleme, wenn Nutzer Wetter-Integrationsdaten statt echter lokaler Sensoren verwendet haben.</p>
+                    </div>
+
+                    <div class="info-box success">
+                        <div class="info-box-title">Tipp</div>
+                        <p>Auch wenn ihr nur die Pflicht-Sensoren habt, wird die Integration funktionieren! Die optionalen Sensoren verbessern lediglich die Lerngeschwindigkeit und Genauigkeit. Lieber keine optionalen Sensoren angeben als ungenaue Wetter-Integrationsdaten.</p>
+                    </div>
+
+                    <div class="article-tags">
+                        <span class="tag">Sensoren</span>
+                        <span class="tag">Konfiguration</span>
+                        <span class="tag">Einrichtung</span>
+                        <span class="tag">Best Practice</span>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Article 5: Anlagenerweiterung -->
+            <article class="article-card" id="anlagenerweiterung">
+                <div class="article-header">
+                    <div class="article-icon blue">🔧</div>
+                    <div class="article-title">
+                        <h2>Anlagenerweiterung & Systemänderungen<a href="#anlagenerweiterung" class="anchor-link">#</a></h2>
+                        <div class="author">Feature-Dokumentation</div>
+                    </div>
+                </div>
+
+                <div class="article-content">
+                    <p>Was passiert, wenn ihr eure PV-Anlage erweitert oder verändert? Die gute Nachricht: Die Integration kann damit umgehen!</p>
+
+                    <h3>Automatische Neukalibrierung</h3>
+                    <p>Wenn ihr eure Anlage erweitert (z.B. von 7 auf 13 Panels), erkennt das System die Änderung und kalibriert sich automatisch neu.</p>
+
+                    <div class="info-box">
+                        <div class="info-box-title">Beispiel aus der Praxis</div>
+                        <p>Ein Nutzer hat seine Anlage von 7 auf 13 Panels erweitert. Das System hat sich innerhalb von <strong>maximal 7 Tagen</strong> vollständig neu kalibriert – unabhängig davon, ob die neuen Panels eine andere Ausrichtung oder Montage hatten.</p>
+                    </div>
+
+                    <h3>Was wird automatisch erkannt?</h3>
+                    <ul>
+                        <li>Änderung der Gesamtleistung (mehr/weniger Panels)</li>
+                        <li>Neue Ausrichtungen oder Neigungswinkel</li>
+                        <li>Unterschiedliche String-Konfigurationen</li>
+                        <li>Neue Verschattungsmuster</li>
+                    </ul>
+
+                    <h3>Empfohlene Vorgehensweise</h3>
+                    <ol class="step-list">
+                        <li>Anlage physisch erweitern/ändern</li>
+                        <li>Sensoren in Home Assistant entsprechend anpassen (falls nötig)</li>
+                        <li>Abwarten – das System lernt automatisch die neuen Gegebenheiten</li>
+                        <li>Nach ca. 7 Tagen sollte die Kalibrierung abgeschlossen sein</li>
+                    </ol>
+
+                    <div class="info-box success">
+                        <div class="info-box-title">Kein manueller Reset nötig!</div>
+                        <p>Ihr müsst die Integration <strong>nicht</strong> neu installieren oder zurücksetzen. Das System erkennt die Änderungen und passt sich an. Die bestehenden Lerndaten helfen sogar dabei, schneller zu konvergieren.</p>
+                    </div>
+
+                    <div class="article-tags">
+                        <span class="tag">Erweiterung</span>
+                        <span class="tag">Kalibrierung</span>
+                        <span class="tag">Panels</span>
+                        <span class="tag">Automatisch</span>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Article 6: Troubleshooting -->
+            <article class="article-card" id="troubleshooting">
+                <div class="article-header">
+                    <div class="article-icon">🔧</div>
+                    <div class="article-title">
+                        <h2>Troubleshooting-Tipps<a href="#troubleshooting" class="anchor-link">#</a></h2>
+                        <div class="author">Problemlösung</div>
+                    </div>
+                </div>
+
+                <div class="article-content">
+                    <p>Hier findet ihr Lösungen für häufig auftretende Probleme.</p>
+
+                    <h3>Entity-ID Probleme</h3>
+                    <p>Wenn Entitäten falsche oder doppelte IDs haben:</p>
+                    <ol class="step-list">
+                        <li>Geht zu <strong>Einstellungen → Geräte & Dienste → Integrationen</strong></li>
+                        <li>Findet die Solar Forecast ML Integration</li>
+                        <li>Klickt auf das <strong>Drei-Punkte-Menü</strong> (⋮)</li>
+                        <li>Wählt <strong>"Entitäts-ID neu erstellen"</strong></li>
+                    </ol>
+
+                    <h3>Phantom-Entitäten im Browser</h3>
+                    <p>Wenn gelöschte Entitäten noch angezeigt werden:</p>
+                    <div class="info-box">
+                        <div class="info-box-title">Lösung</div>
+                        <p><strong>Browser-Cache leeren!</strong> Oft werden alte Entitäten nur noch im Browser-Cache angezeigt, obwohl sie in HA nicht mehr existieren. Ein Hard-Refresh (Strg+Shift+R / Cmd+Shift+R) oder das Leeren des Browser-Caches löst das Problem.</p>
+                    </div>
+
+                    <h3>Warnungen nach Installation</h3>
+                    <p>Nach der Erstinstallation können Warnungen im Log erscheinen – <strong>das ist normal!</strong></p>
+                    <div class="info-box warning">
+                        <div class="info-box-title">Nach der Installation</div>
+                        <p>Nach Abschluss der Einrichtung:</p>
+                        <ul>
+                            <li><strong>10 Minuten warten</strong> – das System baut seine Caches auf</li>
+                            <li><strong>Home Assistant neu starten</strong> – damit alle Komponenten sauber initialisiert werden</li>
+                            <li>Initiale Warnungen im Log sind <strong>erwartetes Verhalten</strong> und verschwinden nach dem Neustart</li>
+                        </ul>
+                    </div>
+
+                    <h3>Beta-Version auf Release updaten</h3>
+                    <div class="info-box danger">
+                        <div class="info-box-title">Wichtig beim Update von Beta auf Release!</div>
+                        <p><strong>BETA-Versionen vollständig löschen</strong> bevor ihr die finale Release-Version installiert! Andernfalls können Reste der Beta-Version zu Konflikten führen.</p>
+                    </div>
+                    <ol class="step-list">
+                        <li>Beta-Integration vollständig deinstallieren</li>
+                        <li>Home Assistant komplett neu starten</li>
+                        <li>Erst dann die Release-Version installieren</li>
+                    </ol>
+
+                    <h3>Weitere Hilfe benötigt?</h3>
+                    <p>Wenn diese Tipps nicht helfen:</p>
+                    <ul>
+                        <li>Prüft die <a href="https://github.com/Zara-Toorox/ha-solar-forecast-ml/issues">GitHub Issues</a> – vielleicht wurde euer Problem schon gelöst</li>
+                        <li>Erstellt ein neues Issue mit einer detaillierten Beschreibung</li>
+                        <li>Bitte immer erst den korrekten Weg (Neustart statt nur Reload) probieren, bevor ihr Bugs meldet!</li>
+                    </ul>
+
+                    <div class="article-tags">
+                        <span class="tag">Troubleshooting</span>
+                        <span class="tag">Probleme</span>
+                        <span class="tag">Lösungen</span>
+                        <span class="tag">FAQ</span>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Article 7: Datenschutz & Sicherheit -->
+            <article class="article-card" id="datenschutz">
+                <div class="article-header">
+                    <div class="article-icon green">🔒</div>
+                    <div class="article-title">
+                        <h2>Datenschutz & Sicherheit<a href="#datenschutz" class="anchor-link">#</a></h2>
+                        <div class="author">Sicherheits-Dokumentation</div>
+                    </div>
+                </div>
+
+                <div class="article-content">
+                    <p>Eine der wichtigsten Design-Entscheidungen dieser Integration: <strong>Alles läuft lokal.</strong> Hier erfahrt ihr, was das genau bedeutet.</p>
+
+                    <h3>100% Lokaler Betrieb</h3>
+                    <p>Die gesamte KI-Verarbeitung findet auf eurem Home Assistant System statt. Es werden <strong>keine Daten an externe Server</strong> gesendet.</p>
+
+                    <div class="info-box success">
+                        <div class="info-box-title">Keine Cloud-KI!</div>
+                        <p>Diese Integration verwendet <strong>KEIN</strong> ChatGPT, Gemini, Claude oder andere Cloud-KI-Dienste. Das gesamte Machine Learning läuft lokal auf eurer Hardware.</p>
+                    </div>
+
+                    <h3>Wofür wird Internet benötigt?</h3>
+                    <p>Internet wird <strong>nur</strong> für folgende Daten benötigt:</p>
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Datentyp</th>
+                                <th>Quelle</th>
+                                <th>Zweck</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Wetterdaten</td>
+                                <td>Open-Meteo, DWD, etc.</td>
+                                <td>Prognose-Unterstützung</td>
+                            </tr>
+                            <tr>
+                                <td>Astronomische Daten</td>
+                                <td>Diverse APIs</td>
+                                <td>Sonnenauf-/untergang, Sonnenstand</td>
+                            </tr>
+                            <tr>
+                                <td>Satellitendaten</td>
+                                <td>Cloud-Layer APIs</td>
+                                <td>Wolkenbedeckung</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h3>Wo werden Daten gespeichert?</h3>
+                    <p>Alle Modelle und Trainingsdaten werden lokal gespeichert:</p>
+                    <div class="code-block">config/solar_forecast_ml/</div>
+                    <p>Dieser Ordner enthält:</p>
+                    <ul>
+                        <li>Trainierte KI-Modelle</li>
+                        <li>Historische Trainingsdaten</li>
+                        <li>Konfigurationsdaten</li>
+                        <li>Cache-Dateien</li>
+                    </ul>
+
+                    <h3>Was verlässt NICHT euer Netzwerk?</h3>
+                    <ul>
+                        <li>Eure Ertragsdaten</li>
+                        <li>Eure Verbrauchsdaten</li>
+                        <li>Eure Sensor-Werte</li>
+                        <li>Eure Anlagen-Konfiguration</li>
+                        <li>Die trainierten KI-Modelle</li>
+                        <li>Jegliche persönliche Informationen</li>
+                    </ul>
+
+                    <div class="info-box">
+                        <div class="info-box-title">Transparenz</div>
+                        <p>Der komplette Quellcode ist Open Source und kann auf <a href="https://github.com/Zara-Toorox/ha-solar-forecast-ml">GitHub</a> eingesehen werden. Ihr könnt selbst nachprüfen, dass keine Daten nach außen gesendet werden.</p>
+                    </div>
+
+                    <div class="article-tags">
+                        <span class="tag">Datenschutz</span>
+                        <span class="tag">Sicherheit</span>
+                        <span class="tag">Lokal</span>
+                        <span class="tag">Privacy</span>
+                    </div>
+                </div>
+            </article>
+
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-links">
+                <a href="https://github.com/Zara-Toorox/ha-solar-forecast-ml">GitHub</a>
+                <a href="https://github.com/Zara-Toorox/ha-solar-forecast-ml#installation">Dokumentation</a>
+                <a href="https://github.com/Zara-Toorox/ha-solar-forecast-ml/issues">Issues</a>
+                <a href="https://github.com/Zara-Toorox/ha-solar-forecast-ml/releases">Releases</a>
+            </div>
+            <p class="footer-copy">
+                © 2025 <a href="https://github.com/Zara-Toorox">Zara-Toorox</a> ·
+                Solar Forecast ML ·
+                Lizenz: AGPL-3.0 ·
+                "Live long and prosper!"
+            </p>
+        </div>
+    </footer>
+</body>
+</html>

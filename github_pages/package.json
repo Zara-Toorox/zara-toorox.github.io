@@ -1,0 +1,14 @@
+{
+  "name": "solar-forecast-ml-website",
+  "version": "1.0.0",
+  "description": "Solar Forecast ML - Website for Home Assistant Integration",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^5.4.0"
+  }
+}
