@@ -606,5 +606,42 @@ Einstellung C: Genauigkeit: 81% ← Gewinner
             </p>
         </div>
     </footer>
+
+    <script>
+    // Theme Toggle
+    (function() {
+        const THEME_KEY = 'sfml-theme';
+
+        function getTheme() {
+            return localStorage.getItem(THEME_KEY) ||
+                   (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+        }
+
+        function setTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            document.querySelectorAll('.theme-toggle').forEach(btn => {
+                const sun = btn.querySelector('.icon-sun');
+                const moon = btn.querySelector('.icon-moon');
+                if (sun) sun.style.display = theme === 'dark' ? 'block' : 'none';
+                if (moon) moon.style.display = theme === 'light' ? 'block' : 'none';
+            });
+        }
+
+        // Apply theme immediately
+        setTheme(getTheme());
+
+        // Toggle on click
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.theme-toggle').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const current = document.documentElement.getAttribute('data-theme') || 'dark';
+                    const newTheme = current === 'dark' ? 'light' : 'dark';
+                    localStorage.setItem(THEME_KEY, newTheme);
+                    setTheme(newTheme);
+                });
+            });
+        });
+    })();
+    </script>
 </body>
 </html>
