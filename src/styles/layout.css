@@ -104,7 +104,8 @@ nav .container {
 }
 
 .nav-dropdown-toggle:hover,
-.nav-dropdown.active .nav-dropdown-toggle {
+.nav-dropdown.active .nav-dropdown-toggle,
+.nav-dropdown:hover .nav-dropdown-toggle {
     color: var(--primary);
 }
 
@@ -114,7 +115,8 @@ nav .container {
     transition: transform var(--transition-normal);
 }
 
-.nav-dropdown.active .nav-dropdown-toggle svg {
+.nav-dropdown.active .nav-dropdown-toggle svg,
+.nav-dropdown:hover .nav-dropdown-toggle svg {
     transform: rotate(180deg);
 }
 
@@ -135,7 +137,8 @@ nav .container {
     margin-top: 12px;
 }
 
-.nav-dropdown.active .nav-dropdown-menu {
+.nav-dropdown.active .nav-dropdown-menu,
+.nav-dropdown:hover .nav-dropdown-menu {
     opacity: 1;
     visibility: visible;
 }
