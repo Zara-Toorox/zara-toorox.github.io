@@ -618,8 +618,7 @@
             <a href="#" class="logo">Solar Forecast ML</a>
             <ul class="nav-links">
                 <li><a href="#features">Features</a></li>
-                <li><a href="#architecture">Architektur</a></li>
-                <li><a href="#weather">Wetter-Blending</a></li>
+                <li><a href="#weather">Wetter-Fusion</a></li>
                 <li><a href="#installation">Installation</a></li>
                 <li><a href="showcase.html">Showcase</a></li>
                 <li><a href="wissensbasis.html">Wissensbasis</a></li>
@@ -641,7 +640,7 @@
                     für Home Assistant
                 </h1>
                 <p>
-                    KI-gestützte Solarprognose mit TinyLSTM Multi-Output Neuronalen Netzwerk und 5-Quellen Wetter-Blending.
+                    KI-gestützte Solarprognose mit Hybrid-AI und intelligenter Wetter-Fusion.
                     Präzise 24-Stunden Vorhersagen für maximale Effizienz deiner PV-Anlage.
                 </p>
                 <div class="btn-group">
@@ -670,8 +669,8 @@
                         <div class="stat-label">Vorhersagen</div>
                     </div>
                     <div class="stat">
-                        <div class="stat-value">LSTM</div>
-                        <div class="stat-label">KI-Modell</div>
+                        <div class="stat-value">AI</div>
+                        <div class="stat-label">Hybrid-KI</div>
                     </div>
                 </div>
             </div>
@@ -689,26 +688,26 @@
             <div class="features-grid">
                 <div class="feature-card">
                     <div class="feature-icon">🧠</div>
-                    <h3>TinyLSTM Multi-Output</h3>
-                    <p>Speziell entwickeltes LSTM-Netzwerk mit 17 Base-Features + 3 Features pro Panelgruppe. Automatisches tägliches Training um 06:00 Uhr.</p>
+                    <h3>Hybrid-AI Prognose</h3>
+                    <p>Intelligente KI-Modelle lernen das Verhalten deiner Anlage und optimieren sich automatisch für maximale Prognosegenauigkeit.</p>
                 </div>
 
                 <div class="feature-card">
                     <div class="feature-icon">🔍</div>
-                    <h3>Grid-Search Optimierung</h3>
-                    <p>Automatische Hyperparameter-Optimierung findet die besten Hidden-Size, Learning-Rate und Sequence-Length für deine Anlage.</p>
+                    <h3>Selbst-Optimierung</h3>
+                    <p>Automatische Optimierung passt die KI-Parameter kontinuierlich an deine spezifische Anlage und lokale Bedingungen an.</p>
                 </div>
 
                 <div class="feature-card">
                     <div class="feature-icon">🌤️</div>
-                    <h3>5-Quellen Wetter-Blending</h3>
-                    <p>WeatherExpertBlender kombiniert Open-Meteo, wttr.in, DWD Bright Sky, ECMWF Layers und Pirate Weather mit Cloud-Type-spezifischen Gewichten.</p>
+                    <h3>Multi-Wetter-Fusion</h3>
+                    <p>Intelligente Kombination mehrerer Wetterdienste für zuverlässige Vorhersagen - auch bei wechselhaftem Wetter.</p>
                 </div>
 
                 <div class="feature-card">
                     <div class="feature-icon">⚡</div>
-                    <h3>Physics Engine Fallback</h3>
-                    <p>PanelGroupCalculator mit POA-Berechnung, Temperaturkorrektur und DNI-Tracking als robuster Fallback wenn KI nicht bereit ist.</p>
+                    <h3>Physik-basierter Fallback</h3>
+                    <p>Robuste Berechnungen basierend auf Sonnenstand und Panelausrichtung als zuverlässiger Backup.</p>
                 </div>
 
                 <div class="feature-card">
@@ -726,142 +725,49 @@
         </div>
     </section>
 
-    <!-- Architecture Section -->
-    <section id="architecture" class="architecture">
-        <div class="container">
-            <div class="section-header">
-                <h2>System-Architektur</h2>
-                <p>Sauberer, moderner Code ohne Legacy-Ballast</p>
-            </div>
-
-            <div class="arch-diagram">
-<pre>
-┌─────────────────────────────────────────────────────────────────────────┐
-│                        <span class="highlight">ForecastOrchestrator</span>                             │
-│                                                                         │
-│  ┌───────────────────────────────────────────────────────────────────┐  │
-│  │                  <span class="blue">RuleBasedForecastStrategy</span>                        │  │
-│  │                                                                   │  │
-│  │   ┌─────────────────┐         ┌────────────────────────────┐     │  │
-│  │   │   <span class="highlight">AIPredictor</span>    │         │   <span class="green">PanelGroupCalculator</span>    │     │  │
-│  │   │   (TinyLSTM)    │         │   (Physics Engine)         │     │  │
-│  │   └────────┬────────┘         └─────────────┬──────────────┘     │  │
-│  │            │                                │                    │  │
-│  │            └────────────┬───────────────────┘                    │  │
-│  │                         │                                        │  │
-│  │                 Prediction per Hour                              │  │
-│  └───────────────────────────────────────────────────────────────────┘  │
-└─────────────────────────────────────────────────────────────────────────┘
-</pre>
-            </div>
-
-            <!-- Multi-Output Explanation -->
-            <div class="multi-output">
-                <h3>Multi-Output LSTM Architektur</h3>
-                <p style="text-align: center; color: var(--text-muted); margin-bottom: 20px;">
-                    Dynamische Feature-Berechnung basierend auf der Anzahl der Panelgruppen
-                </p>
-
-                <div class="formula">
-                    <span class="var">Features</span> = 17 (Base) + 3 × <span class="var">n</span> (Gruppen)
-                </div>
-
-                <table class="groups-table">
-                    <thead>
-                        <tr>
-                            <th>Gruppen</th>
-                            <th>Features</th>
-                            <th>Outputs</th>
-                            <th>Beschreibung</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>0</td>
-                            <td>17</td>
-                            <td>1</td>
-                            <td>Nur Gesamtprognose</td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>20</td>
-                            <td>1</td>
-                            <td>Eine Panelgruppe</td>
-                        </tr>
-                        <tr>
-                            <td style="color: var(--primary);">2</td>
-                            <td style="color: var(--primary);">23</td>
-                            <td style="color: var(--primary);">2</td>
-                            <td style="color: var(--primary);">Zwei Gruppen (Standard)</td>
-                        </tr>
-                        <tr>
-                            <td>3</td>
-                            <td>26</td>
-                            <td>3</td>
-                            <td>Drei Panelgruppen</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </section>
-
     <!-- Weather Blending Section -->
     <section id="weather" class="weather-sources">
         <div class="container">
             <div class="section-header">
-                <h2>5-Quellen Wetter-Blending</h2>
-                <p>WeatherExpertBlender mit Cloud-Type-spezifischen Gewichten für maximale Genauigkeit</p>
+                <h2>Intelligente Wetter-Fusion</h2>
+                <p>Mehrere Wetterdienste kombiniert für maximale Vorhersagegenauigkeit</p>
             </div>
 
             <div class="sources-grid">
                 <div class="source-card">
                     <div class="icon">🌍</div>
-                    <h4>Open-Meteo</h4>
-                    <p>Primäre Quelle mit GHI und Strahlungsdaten</p>
-                    <span class="source-badge">Kostenlos</span>
-                </div>
-
-                <div class="source-card">
-                    <div class="icon">🌐</div>
-                    <h4>wttr.in</h4>
-                    <p>World Weather Online, 3h-Intervalle</p>
+                    <h4>Globale Quellen</h4>
+                    <p>Internationale Wetterdienste mit Strahlungsdaten</p>
                     <span class="source-badge">Kostenlos</span>
                 </div>
 
                 <div class="source-card">
                     <div class="icon">🇩🇪</div>
-                    <h4>DWD Bright Sky</h4>
-                    <p>Deutscher Wetterdienst ICON</p>
+                    <h4>Regionale Quellen</h4>
+                    <p>Lokale Wetterdienste für höhere Genauigkeit</p>
                     <span class="source-badge">Kostenlos</span>
                 </div>
 
                 <div class="source-card">
-                    <div class="icon">🌊</div>
-                    <h4>ECMWF Layers</h4>
-                    <p>Cloud-Layer Analyse (low/mid/high)</p>
-                    <span class="source-badge">Kostenlos</span>
+                    <div class="icon">☁️</div>
+                    <h4>Bewölkungsanalyse</h4>
+                    <p>Detaillierte Wolkenanalyse für präzise Prognosen</p>
+                    <span class="source-badge">Automatisch</span>
                 </div>
 
                 <div class="source-card">
-                    <div class="icon">🏴‍☠️</div>
-                    <h4>Pirate Weather</h4>
-                    <p>NOAA GFS/HRRR Daten</p>
-                    <span class="source-badge">Optional</span>
+                    <div class="icon">🔄</div>
+                    <h4>Adaptive Gewichtung</h4>
+                    <p>Automatische Anpassung je nach Wetterlage</p>
+                    <span class="source-badge">Intelligent</span>
                 </div>
             </div>
 
-            <div class="arch-diagram" style="margin-top: 40px;">
-<pre>
-<span class="highlight">Cloud-Type-Specific Blending:</span>
-
-CLEAR (0-10%):        Open-Meteo 30% | DWD 25% | ECMWF 20% | Pirate 15% | wttr 10%
-PARTLY_CLOUDY (10-40%): DWD <span class="blue">30%</span> | Open-Meteo 25% | ECMWF 20% | Pirate 15% | wttr 10%
-MOSTLY_CLOUDY (40-70%): DWD <span class="blue">35%</span> | ECMWF 25% | Open-Meteo 20% | Pirate 15% | wttr 5%
-OVERCAST (70-90%):    DWD <span class="blue">40%</span> | ECMWF 25% | Open-Meteo 15% | Pirate 15% | wttr 5%
-
-→ Output: <span class="green">weather_forecast_corrected.json</span> (SINGLE SOURCE OF TRUTH)
-</pre>
+            <div style="text-align: center; margin-top: 40px; padding: 30px; background: var(--bg-card); border-radius: 16px; border: 1px solid var(--border);">
+                <p style="color: var(--text-muted); font-size: 1.1rem;">
+                    Die intelligente Wetter-Fusion kombiniert automatisch die besten verfügbaren Daten
+                    und passt die Gewichtung dynamisch an die aktuelle Wetterlage an.
+                </p>
             </div>
         </div>
     </section>
