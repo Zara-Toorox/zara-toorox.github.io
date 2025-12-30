@@ -1,8 +1,8 @@
 # Dependencies
 node_modules/
 
-# Build output (wird durch GitHub Actions erstellt)
-github_pages/dist/
+# Build output
+dist/
 
 # OS files
 .DS_Store
